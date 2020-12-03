@@ -42,6 +42,5 @@ class program:
         tittare = "("+str(self.tittare)+")"
         return "{0} {1:>5s} - {2:>5s} {3:<35s} {5:<5} |{4}".format(" ", start, stop, namn, viewers, tittare)
 
-
     def info(self):
         return "Kanal:  {0}  Startar:   {1}    Slutar:  {2}     Tittare:    {4}    Namn: {3} ".format(self.kanal, self.start, self.stop, self.namn, self.tittare)

@@ -2,11 +2,12 @@ from ProgramClass import program
 
 
 def inputlista(doc):  # det här skapar en lista, där varje index är en tv-apparat som innehåller tiderna som en apparat är inne och vilken kanal i den tidpunkten.
-    kati = open(doc, "r")
-    readkati = kati.read()
-    inputlista = readkati.split("-------")
+    kannaltid = open(doc, "r")
+    readkannaltid = kannaltid.read()
+    inputlista = readkannaltid.split("-------")
     k = list(inputlista[0])
-    while True:
+
+    while True:  # tar bort allt skräp innan siffrorna som jag vill ha.
         if k[0] == "0" or k[0] == "1" or k[0] == "2":
             break
         else:
@@ -14,9 +15,10 @@ def inputlista(doc):  # det här skapar en lista, där varje index är en tv-app
             continue
     k = "".join(k)
     inputlista[0] = k
-    kati.close()
+    kannaltid.close()
+
     i = 0
-    for x in range(len(inputlista)): # gör en list där varje index är en apparat och varje index i apparaten är tidpunkt och kanal
+    for x in range(len(inputlista)):  # gör en list där varje index är en apparat och varje index i apparaten är tidpunkt och kanal
         inputlista[i] = inputlista[i].split("\n")
         if inputlista[i][0] == "":
             inputlista[i].pop(0)
@@ -33,14 +35,14 @@ def inputlista(doc):  # det här skapar en lista, där varje index är en tv-app
 
 
 def teveprogram(doc):  # here we create a list with all the programs as objects
-    kapr = open(doc, "r")
-    readkapr = kapr.read()
-    tevelista = readkapr.split("------------------------------------------------------------------")
-    tevelista.pop(-1)
+    kannalprogram = open(doc, "r")
+    readkannalprogram = kannalprogram.read()
+    programlista = readkannalprogram.split("------------------------------------------------------------------")
+    programlista.pop(-1)
 
     i = 0
-    for x in range(len(tevelista)):  # efter den här har vi en lista för varje kanal
-        k = list(tevelista[i])
+    for x in range(len(programlista)):  # efter den här har vi en lista för varje kanal, vilket betyder att vi tar bort skräp i denna loop
+        k = list(programlista[i])
         while True:
             if k[0] == "0" or k[0] == "1" or k[0] == "2" or k[0] == "3" or k[0] == "4" or k[0] == "5":
                 break
@@ -48,45 +50,42 @@ def teveprogram(doc):  # here we create a list with all the programs as objects
                 del k[0]
                 continue
         k = "".join(k)
-        tevelista[i] = k
+        programlista[i] = k
         i += 1
 
     i = 0
-    for x in range(len(tevelista)):  # här är varje index en kanal, varje index för kanalerna är programmen där varje index i den listan är 1. start, 2. stop, 3. namn på programmet
-        tevelista[i] = tevelista[i].split("\n")
-        tevelista[i].pop(0)
+    for x in range(len(programlista)):  # här är varje index en kanal, varje index för kanalerna är programmen där varje index i den listan är 1. start, 2. stop, 3. namn på programmet
+        programlista[i] = programlista[i].split("\n")
+        programlista[i].pop(0)
         k = 0
-        for p in range(len(tevelista[i])):
-            tevelista[i][k] = tevelista[i][k].replace(".", "")
-            tevelista[i][k] = tevelista[i][k].split(" ", 1)
-            a = tevelista[i][k][-1]
-            tevelista[i][k] = tevelista[i][k][0].split("-")
-            tevelista[i][k].append(a)
+        for p in range(len(programlista[i])):
+            programlista[i][k] = programlista[i][k].replace(".", "")
+            programlista[i][k] = programlista[i][k].split(" ", 1)
+            a = programlista[i][k][-1]
+            programlista[i][k] = programlista[i][k][0].split("-")
+            programlista[i][k].append(a)
             k += 1
         i += 1
 
     i = 0
     teve2 = []
-    for x in range(len(tevelista)):
+    for x in range(len(programlista)):  # här skapas programobjekten.
         j = 0
-        tevelista[i].pop(-1)
-        for p in range(len(tevelista[i])):
-            program1 = program(tevelista[i][j][2], i+1, int(tevelista[i][j][0]), int(tevelista[i][j][1]))
+        programlista[i].pop(-1)
+        for p in range(len(programlista[i])):
+            program1 = program(programlista[i][j][2], i+1, int(programlista[i][j][0]), int(programlista[i][j][1]))
             teve2.append(program1)
             j += 1
         i += 1
     return teve2
 
-def tittare(tevelista, ilist):
+
+def tittare(programlista, ilist):  # Varje programobjekt är utan tittare i början, så här plussar vi på tittare för varje log som är inom programmet start och stopp
     for i in range(len(ilist)):
         for p in range(len(ilist[i])):
             a = 0
-            for k in range(len(tevelista)):
-                if tevelista[k] == int(ilist[i][p][0]) and tevelista[k].kanal == int(ilist[i][p][1]):
-                    tevelista[k].plusviewer()
+            for k in range(len(programlista)):
+                if programlista[k] == int(ilist[i][p][0]) and programlista[k].kanal == int(ilist[i][p][1]):
+                    programlista[k].plusviewer()
 
-    z = 0
-#    for x in tevelista:
-#        print(tevelista[z].info())
-#        z += 1
-    return tevelista
+    return programlista
